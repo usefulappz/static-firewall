@@ -1,0 +1,14 @@
+#!/bin/bash
+IPT=$(which iptables)
+
+$IPT -A OUTPUT -m tcp -p tcp --dport 21 -j ACCEPT # FTP
+$IPT -A OUTPUT -m tcp -p tcp --dport 22 -j ACCEPT # SSH
+$IPT -A OUTPUT -m tcp -p tcp --dport 25 -j ACCEPT # SMTP
+$IPT -A OUTPUT -m tcp -p tcp --dport 465 -j ACCEPT # SMTP
+$IPT -A OUTPUT -m tcp -p tcp --dport 587 -j ACCEPT # SMTP
+$IPT -A OUTPUT -m tcp -p tcp --dport 80 -j ACCEPT # HTTP
+$IPT -A OUTPUT -m tcp -p tcp --dport 443 -j ACCEPT # HTTP
+$IPT -A OUTPUT -m tcp -p tcp --dport 43 -j ACCEPT # WHOIS
+$IPT -A OUTPUT -m tcp -p tcp --dport 9418 -j ACCEPT # GIT
+$IPT -A OUTPUT -m tcp -p tcp --dport 3306 -j ACCEPT # MySQL
+
