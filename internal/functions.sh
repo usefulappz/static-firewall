@@ -133,7 +133,7 @@ fwstart()
 
   echo -n "."
   # Open Services
-  source $FWPATH/ports.ingress
+  source $FWPATH/acl/ports.ingress
 
   # Log drop everything else
   $IPT -A INPUT -j LOGDROP
@@ -157,7 +157,7 @@ fwstart()
 
   echo -n "."
   # Egress Pinholes
-  source $FWPATH/ports.egress
+  source $FWPATH/acl/ports.egress
 
   # Log traffic not matching any above rules egressing your firewall
   $IPT -A OUTPUT -j LOGDROPOUT
