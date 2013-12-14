@@ -7,7 +7,7 @@ die_gracefully()
 add_blackhole()
 {
   bIP=$1
-  if grep -Fxq "$bIP" "$FWPATH/firewall.deny"; then
+  if grep -Fxq "$bIP" "$FWPATH/acl/firewall.deny"; then
     die_gracefully "$bIP is already blackholed"
 	exit 1
   else
@@ -23,14 +23,14 @@ del_blackhole()
   bIP=$1
   $IPT -D BLACKHOLE -s $bIP -j DROP &>/dev/null
   $IPT -D BLACKHOLE -d $bIP -j DROP &>/dev/null
-  grep -v "$bIP" "$FWPATH/firewall.deny" > "$FWPATH/firewall.deny"
+  grep -v "$bIP" "$FWPATH/acl/firewall.deny" > "$FWPATH/acl/firewall.deny"
   echo "* Removed blackhole for $bIP"
 }
 
 add_trust()
 {
   tIP=$1
-  if grep -Fxq "$tIP" "$FWPATH/firewall.trust"; then
+  if grep -Fxq "$tIP" "$FWPATH/acl/firewall.trust"; then
     echo "$tIP is already trusted."
   else
     $IPT -I TRUST -s $tIP -j ACCEPT &>/dev/null
@@ -45,7 +45,7 @@ del_trust()
   tIP=$1
   $IPT -D TRUST -s $tIP -j ACCEPT &>/dev/null
   $IPT -D TRUST -d $tIP -j ACCEPT &>/dev/null
-  grep -v "$tIP" "$FWPATH/firewall.trust" > "$FWPATH/firewall.trust"
+  grep -v "$tIP" "$FWPATH/firewall.trust" > "$FWPATH/acl/firewall.trust"
   echo "* Untrusted $tIP"
 }
 
