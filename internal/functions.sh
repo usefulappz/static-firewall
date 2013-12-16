@@ -45,7 +45,7 @@ del_trust()
   tIP=$1
   $IPT -D TRUST -s $tIP -j ACCEPT &>/dev/null
   $IPT -D TRUST -d $tIP -j ACCEPT &>/dev/null
-  grep -v "$tIP" "$FWPATH/firewall.trust" > "$FWPATH/acl/firewall.trust"
+  grep -v "$tIP" "$FWPATH/acl/firewall.trust" > "$FWPATH/acl/firewall.trust"
   echo "* Untrusted $tIP"
 }
 
