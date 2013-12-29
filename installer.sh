@@ -36,12 +36,12 @@ whitelist_listening_ports()
   local TCP_PORTS=$(netstat -napl | grep LISTEN | grep -v 127.0.0.1 | grep tcp | awk '{print $4}' | grep : | tr ':' ' ' | awk '{print $2}' | sort -n)
   for port in $TCP_PORTS; do
     find_service "$port" "tcp"
-    echo "\$IPT -A INPUT -m tcp -p tcp --dport $port -j ACCEPT # $FIND_SERVICE" >> "$INSTALL_DIR/ports.ingress"
+    echo "\$IPT -A INPUT -m tcp -p tcp --dport $port -j ACCEPT # $FIND_SERVICE" >> "$INSTALL_DIR/acl/ports.ingress"
   done
   local UDP_PORTS=$(netstat -napl | grep -v 127.0.0.1 | grep udp | awk '{print $4}' | grep : | tr ':' ' ' | awk '{print $2}' | sort -n)
   for port in $UDP_PORTS; do
     find_service "$port" "udp"
-    echo "\$IPT -A INPUT -m udp -p udp --dport $port -j ACCEPT # $FIND_SERVICE" >> "$INSTALL_DIR/ports.ingress"
+    echo "\$IPT -A INPUT -m udp -p udp --dport $port -j ACCEPT # $FIND_SERVICE" >> "$INSTALL_DIR/acl/ports.ingress"
   done
 }
 
@@ -96,10 +96,10 @@ post_install()
   echo "$PROD installed."
   echo ""
   echo "Please edit the following files before starting $PROD:"
-  echo -e " Inbound rules:\t\t\t$INSTALL_DIR/ports.ingress"
-  echo -e " Outbound rules:\t\t$INSTALL_DIR/ports.egress"
-  echo -e " Inbound Trusted IPs:\t\t$INSTALL_DIR/firewall.trust"
-  echo -e " Outbound Trusted IPs:\t\t$INSTALL_DIR/firewall.remotes"
+  echo -e " Inbound rules:\t\t\t$INSTALL_DIR/acl/ports.ingress"
+  echo -e " Outbound rules:\t\t$INSTALL_DIR/acl/ports.egress"
+  echo -e " Inbound Trusted IPs:\t\t$INSTALL_DIR/acl/firewall.trust"
+  echo -e " Outbound Trusted IPs:\t\t$INSTALL_DIR/acl/firewall.remotes"
   echo ""
   echo "To start $PROD, run $SYSV_DIR/firewall start"
 }
