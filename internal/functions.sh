@@ -13,7 +13,7 @@ add_blackhole()
   else
     $IPT -I BLACKHOLE -s $bIP -j DROP &>/dev/null
     $IPT -I BLACKHOLE -d $bIP -j DROP &>/dev/null
-    echo $bIP >> $FWPATH/firewall.deny
+    echo $bIP >> $FWPATH/acl/firewall.deny
     echo "* Blackholed $bIP"
   fi
 }
@@ -35,7 +35,7 @@ add_trust()
   else
     $IPT -I TRUST -s $tIP -j ACCEPT &>/dev/null
     $IPT -I TRUST -d $tIP -j ACCEPT &>/dev/null
-    echo $tIP >> $FWPATH/firewall.trust
+    echo $tIP >> $FWPATH/acl/firewall.trust
     echo "* Trusted $tIP"
   fi
 }
