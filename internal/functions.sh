@@ -1,3 +1,7 @@
+SYN_LIMIT=50
+SYN_LIMIT_BURST=75
+SYN_LIMIT_TYPE="s" # or "m" for minute, adjust limits accordingly
+
 die_gracefully()
 {
   echo "ERROR: $*"
@@ -55,40 +59,37 @@ fwstart()
   echo -n "Firewall starting"
 
   # Clear Everything
-  $IPT -P INPUT ACCEPT
-  $IPT -P OUTPUT ACCEPT
-  $IPT -P FORWARD ACCEPT
-  $IPT -X &>/dev/null
-  $IPT -Z &>/dev/null
-  $IPT -F &>/dev/null
+  $IPT -P INPUT DROP
+  $IPT -P OUTPUT DROP
+  $IPT -P FORWARD DROP
+
+  declare -a CHAINS=(LOGATTACK BLACKHOLE TRUST LOGDROP LOGDROPOUT SYNFLOOD)
+  for chain in ${CHAINS[@]}
+  do
+    $IPT -N $chain
+  done
 
   echo -n "."
   # Attack Logging
-  $IPT -N LOGATTACK &>/dev/null
   $IPT -A LOGATTACK -j LOG --log-level info --log-prefix "FW_ATTACK "
   $IPT -A LOGATTACK -j DROP
 
   # Drop chain
-  $IPT -N BLACKHOLE &>/dev/null
   $IPT -A BLACKHOLE -j DROP
 
   # Trusted Chain
-  $IPT -N TRUST &>/dev/null
   $IPT -A TRUST -j ACCEPT
 
   # Logdrop chain
-  $IPT -N LOGDROP &>/dev/null
   $IPT -A LOGDROP -j LOG --log-level info --log-prefix "FW_LOGDROP "
   $IPT -A LOGDROP -j DROP
 
   # Logdrop chain (outbound)
-  $IPT -N LOGDROPOUT &>/dev/null
   $IPT -A LOGDROPOUT -j LOG --log-level info --log-prefix "FW_EGRESS "
   $IPT -A LOGDROPOUT -j DROP
 
   # SYN Protection
-  $IPT -N SYNFLOOD &>/dev/null
-  $IPT -A SYNFLOOD -m limit --limit 175/s --limit-burst 200 -j RETURN
+  $IPT -A SYNFLOOD -m limit --limit $SYN_LIMIT/$SYM_LIMIT_TYPE --limit-burst $SYN_LIMIT_BURST -j RETURN
   $IPT -A SYNFLOOD -j LOGATTACK
 
   echo -n "."
@@ -166,16 +167,15 @@ fwstart()
 
 fwstop()
 {
-  $IPT -X LOGDROP &>/dev/null
-  $IPT -X LOGDROPOUT &>/dev/null
-  $IPT -X BLACKHOLE &>/dev/null
-  $IPT -X SYNFLOOD &>/dev/null
-  $IPT -X LOGATTACK &>/dev/null
-  $IPT -X TRUST &>/dev/null
-  $IPT -Z &>/dev/null
   $IPT -P INPUT ACCEPT
   $IPT -P OUTPUT ACCEPT
   $IPT -P FORWARD ACCEPT
-  $IPT -F &>/dev/null
+  declare -a CHAINS=(LOGDROP LOGDROPOUT BLACKHOLE SYNFLOOD LOGATTACK TRUST INPUT OUTPUT FORWARD)
+  for chain in ${CHAINS[@]}
+  do
+    $IPT -F $chain 2>/dev/null
+	$IPT -X $chain 2>/dev/null
+	$IPT -Z $chain 2>/dev/null
+  done
   echo "Firewall stopped."
 }

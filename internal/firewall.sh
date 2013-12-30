@@ -39,6 +39,23 @@ case "$1" in
     exit 0
   ;;
   
+  logs)
+    if [[ -z "$2" ]]; then
+      echo "usage: $0 logs <ip>"
+	  exit 3
+	else
+      IP="$2"
+	  nice -n10 zgrep --color=always --highlight "$IP" \
+	  /var/log/messages* \
+	  /var/log/secure* \
+	  /var/log/auth* \
+	  /var/log/nginx/*error* \
+	  /var/log/apache2/*error* \
+	  /usr/local/apache/logs/error_log*
+	  /usr/local/apache/logs/modsec_* 2>/dev/null | less	  
+    fi
+  ;;
+
   reload)
     exit 3
   ;;
@@ -96,7 +113,8 @@ case "$1" in
   ;;
 
   *)
-    echo "usage: sfw <start|stop|restart|[[un]deny|[un]allow <ip>]>"
+    echo "usage: $0 <logs|start|stop|restart|[[un]deny|[un]allow <ip>]>"
+	echo "		 logs	 - show matching logs from <ip>"
     echo "       start   - enables firewall"
     echo "       stop    - disables firewall"
     echo "       restart - stop then start again"
