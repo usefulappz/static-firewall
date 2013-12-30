@@ -45,7 +45,7 @@ case "$1" in
 	  exit 3
 	else
       IP="$2"
-	  nice -n10 zgrep --color=always --highlight "$IP" \
+	  nice -n10 zgrep "$IP" \
 	  /var/log/messages* \
 	  /var/log/secure* \
 	  /var/log/auth* \
