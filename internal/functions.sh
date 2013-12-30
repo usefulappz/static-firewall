@@ -1,6 +1,5 @@
 SYN_LIMIT=50
 SYN_LIMIT_BURST=75
-SYN_LIMIT_TYPE="s" # or "m" for minute, adjust limits accordingly
 
 die_gracefully()
 {
@@ -66,7 +65,8 @@ fwstart()
   declare -a CHAINS=(LOGATTACK BLACKHOLE TRUST LOGDROP LOGDROPOUT SYNFLOOD)
   for chain in ${CHAINS[@]}
   do
-    $IPT -N $chain
+    $IPT -X $chain &>/dev/null
+    $IPT -N $chain &>/dev/null
   done
 
   echo -n "."
@@ -89,7 +89,7 @@ fwstart()
   $IPT -A LOGDROPOUT -j DROP
 
   # SYN Protection
-  $IPT -A SYNFLOOD -m limit --limit $SYN_LIMIT/$SYM_LIMIT_TYPE --limit-burst $SYN_LIMIT_BURST -j RETURN
+  $IPT -A SYNFLOOD -m limit --limit $SYN_LIMIT/s --limit-burst $SYN_LIMIT_BURST -j RETURN
   $IPT -A SYNFLOOD -j LOGATTACK
 
   echo -n "."
@@ -173,9 +173,9 @@ fwstop()
   declare -a CHAINS=(LOGDROP LOGDROPOUT BLACKHOLE SYNFLOOD LOGATTACK TRUST INPUT OUTPUT FORWARD)
   for chain in ${CHAINS[@]}
   do
-    $IPT -F $chain 2>/dev/null
-	$IPT -X $chain 2>/dev/null
-	$IPT -Z $chain 2>/dev/null
+    $IPT -F $chain &>/dev/null
+    $IPT -Z $chain &>/dev/null
+    $IPT -X $chain &>/dev/null
   done
   echo "Firewall stopped."
 }
