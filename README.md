@@ -36,5 +36,5 @@ After static-firewall is installed, the installer will give you a list of files 
 
 ## Philosophy
 
-static-firewall uses a default-deny ruleset, which, when installed, will construct a list of listening TCP and UDP ports, and create exceptions for them in /etc/firewall/ports.ingress .  By default, resolvers in /etc/resolv.conf are added to egress trust automatically.  Rules in /etc/firewall/ports.egress are added to the OUTPUT chain, then logdrop for anything not in your rules attempting to egress your server.
+static-firewall uses a default-deny ruleset, which, when installed, will construct a list of listening TCP and UDP ports, and create exceptions for them in /etc/firewall/acl/ports.ingress .  By default, resolvers in /etc/resolv.conf are added to egress trust automatically.  Rules in /etc/firewall/acl/ports.egress are added to the OUTPUT chain, then logdrop for anything not in your rules attempting to egress your server.
 
