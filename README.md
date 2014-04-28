@@ -22,7 +22,7 @@ To install, simply:
 
     git clone https://github.com/viralsecurity/static-firewall
     cd static-firewall
-    sh installer.sh
+    bash installer.sh
 
 ## Post-Install
 
