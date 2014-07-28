@@ -33,7 +33,7 @@ die_gracefully()
 
 whitelist_listening_ports()
 {
-  local TCP_PORTS=$(netstat -napl | grep LISTEN | grep -v 127.0.0.1 | grep tcp | awk '{print $4}' | grep : | tr ':' ' ' | awk '{print $2}' | sort -n)
+  local TCP_PORTS=$(netstat -napl | grep LISTEN | grep -v 127.0.0.1 | grep tcp | awk '{print $4}' | grep : | tr ':' ' ' | awk '{print $2}' | sort -n | uniq -u)
   for port in $TCP_PORTS; do
     find_service "$port" "tcp"
     echo "\$IPT -A INPUT -m tcp -p tcp --dport $port -j ACCEPT # $FIND_SERVICE" >> "$INSTALL_DIR/acl/ports.ingress"
