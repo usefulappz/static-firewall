@@ -1,4 +1,2 @@
 #!/bin/bash
 IPT=$(which iptables)
-$IPT -A INPUT -m tcp -p tcp --dport 22 -j ACCEPT # SSHD
-$IPT -A INPUT -m tcp -p tcp --dport 80 -j ACCEPT # Apache
