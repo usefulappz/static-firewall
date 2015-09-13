@@ -11,7 +11,7 @@ add_blackhole()
 {
   bIP=$1
   if grep -Fxq "$bIP" "$FWPATH/acl/firewall.deny"; then
-    die_gracefully "$bIP is already blackholed"-
+    die_gracefully "$bIP is already blackholed"
 	exit 1
   else
     $IPT -I BLACKHOLE -s $bIP -j DROP &>/dev/null
