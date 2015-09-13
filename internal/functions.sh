@@ -1,5 +1,5 @@
-SYN_LIMIT=50
-SYN_LIMIT_BURST=75
+SYN_LIMIT=75
+SYN_LIMIT_BURST=100
 
 die_gracefully()
 {
@@ -11,7 +11,7 @@ add_blackhole()
 {
   bIP=$1
   if grep -Fxq "$bIP" "$FWPATH/acl/firewall.deny"; then
-    die_gracefully "$bIP is already blackholed"
+    die_gracefully "$bIP is already blackholed"-
 	exit 1
   else
     $IPT -I BLACKHOLE -s $bIP -j DROP &>/dev/null
@@ -71,7 +71,7 @@ fwstart()
 
   echo -n "."
   # Attack Logging
-  $IPT -A LOGATTACK -j LOG --log-level info --log-prefix "FW_ATTACK "
+  $IPT -A LOGATTACK -j LOG --log-level info --log-uid --log-prefix "FW_ATTACK "
   $IPT -A LOGATTACK -j DROP
 
   # Drop chain
